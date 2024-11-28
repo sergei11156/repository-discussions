@@ -11,6 +11,7 @@ import figlet from "figlet";
 import {runAnalyzeRepository} from "../src/commands/analyze-repository.js";
 import {Octokit} from "octokit";
 import dotenv from "dotenv";
+import ora from "ora";
 
 dotenv.config();
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -22,16 +23,16 @@ console.log(
     chalk.green(figlet.textSync("Repo-Discussions", { horizontalLayout: "full", width: 120 }))
 );
 
-console.log(chalk.green("Connecting to github"));
+const spinner = ora(`Connecting to github...`).start();
 const octokit = new Octokit({auth: GITHUB_TOKEN});
-
 const {
   data: { login },
 } = await octokit.rest.users.getAuthenticated();
-console.log(chalk.green("Hello, ", login));
+
+spinner.succeed(chalk.green("Hello, " + login + "!"));
 
 const examples = {
-  "Analyze Repository": runAnalyzeRepository,
+  "Analyze Repository": runAnalyzeRepository.bind(this, octokit),
   "Basic Example": runBasicExample,
   "Chalk Example": runChalkExample,
   "Inquirer Confirm Example": runInquirerConfirmExample,
