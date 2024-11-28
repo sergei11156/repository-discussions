@@ -20,6 +20,7 @@ console.log(
 
 const spinner = ora(`Connecting to github...`).start();
 const octokit = new Octokit({auth: GITHUB_TOKEN});
+
 const {
   data: { login },
 } = await octokit.rest.users.getAuthenticated();
