@@ -6,9 +6,9 @@
   "type": "module",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./bin/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava ./tests/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,5 +18,8 @@
     "figlet": "^1.7.0",
     "inquirer": "^9.2.14",
     "ora": "^8.0.1"
+  },
+  "devDependencies": {
+    "ava": "^6.2.0"
   }
 }
