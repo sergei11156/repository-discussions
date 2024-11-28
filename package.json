@@ -1,7 +1,7 @@
 {
-  "name": "my-node-cli",
+  "name": "repository-discussions",
   "bin": {
-    "my-node-cli": "./bin/index.js"
+    "repos-analyze": "./bin/index.js"
   },
   "type": "module",
   "version": "1.0.0",
