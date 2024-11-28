@@ -9,10 +9,26 @@ import { runOraExample } from "../src/commands/ora-example.js";
 import chalk from "chalk";
 import figlet from "figlet";
 import {runAnalyzeRepository} from "../src/commands/analyze-repository.js";
+import {Octokit} from "octokit";
+import dotenv from "dotenv";
+
+dotenv.config();
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+if (!GITHUB_TOKEN) {
+  throw new Error('GITHUB_TOKEN environment variable requires');
+}
 
 console.log(
     chalk.green(figlet.textSync("Repo-Discussions", { horizontalLayout: "full", width: 120 }))
 );
+
+console.log(chalk.green("Connecting to github"));
+const octokit = new Octokit({auth: GITHUB_TOKEN});
+
+const {
+  data: { login },
+} = await octokit.rest.users.getAuthenticated();
+console.log(chalk.green("Hello, ", login));
 
 const examples = {
   "Analyze Repository": runAnalyzeRepository,
