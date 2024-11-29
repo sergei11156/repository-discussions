@@ -3,32 +3,24 @@
 import inquirer from "inquirer";
 import chalk from "chalk";
 import figlet from "figlet";
-import {runAnalyzeRepository} from "../src/commands/analyze-repository.js";
-import {Octokit} from "octokit";
+import {runAddRepository} from "../src/commands/add-repository.js";
 import dotenv from "dotenv";
-import ora from "ora";
+import {initialize} from "../src/shared/githubClient.js";
 
 dotenv.config();
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
 if (!GITHUB_TOKEN) {
   throw new Error('GITHUB_TOKEN environment variable requires');
 }
+initialize(GITHUB_TOKEN);
 
 console.log(
     chalk.green(figlet.textSync("Repo-Discussions", { horizontalLayout: "full", width: 120 }))
 );
 
-const spinner = ora(`Connecting to github...`).start();
-const octokit = new Octokit({auth: GITHUB_TOKEN});
-
-const {
-  data: { login },
-} = await octokit.rest.users.getAuthenticated();
-
-spinner.succeed(chalk.green("Hello, " + login + "!"));
-
 const options = {
-  "Analyze Repository": runAnalyzeRepository.bind(this, octokit),
+  "Add Repository": runAddRepository,
 };
 
 inquirer
