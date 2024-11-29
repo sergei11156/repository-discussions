@@ -1,6 +1,6 @@
 import inquirer from "inquirer";
 import {Repository} from "../models/repository.js";
-import {loadRepositoryDescription} from "../controllers/getRepositoryData.js";
+import {loadRepositoryDescription} from "../controllers/loadRepositoryDescription.js";
 import chalk from "chalk";
 import ora from "ora";
 
