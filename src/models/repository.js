@@ -1,10 +1,12 @@
 import {listFiles, loadFromFile, saveToFile} from "../storage/json.js";
+import {Issue} from "./issue.js";
 
 
 export class Repository {
     _owner;
     _name;
     _description;
+    _pullRequests = [];
     get description() {
         return this._description;
     }
@@ -29,6 +31,7 @@ export class Repository {
         return await saveToFile(this.getFileName(), {
             owner, name,
             description: this._description,
+            pullRequests: this.serializePullRequest()
         })
     };
 
@@ -56,6 +59,26 @@ export class Repository {
         this._owner = content.owner;
         this._name = content.name;
         this._description = content.description;
+        this.initializePullRequests(content.pullRequests);
+    }
+
+    initializePullRequests(pullRequests) {
+        this._pullRequests = [];
+        for (const pullRequest of pullRequests) {
+            this.addPullRequest(pullRequest);
+        }
+    }
+
+    addPullRequest(pullRequest) {
+        this._pullRequests.push(new Issue(pullRequest));
+    }
+
+    serializePullRequest() {
+        let requests = [];
+        for (const pullRequest of this._pullRequests) {
+            requests.push(pullRequest.getData());
+        }
+        return requests;
     }
 
     getFileName() {
