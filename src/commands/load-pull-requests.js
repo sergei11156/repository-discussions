@@ -21,6 +21,6 @@ const chooseRepository = async () => {
 export const runLoadPullRequests = async () => {
     const repository = await chooseRepository();
     const spinner = ora('Loading repository pull requests').start()
-
     await loadPullRequests(repository);
+    spinner.succeed();
 };

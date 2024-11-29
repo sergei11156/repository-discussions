@@ -1,5 +1,6 @@
 import ora from "ora";
 import {getOctokit} from "../shared/githubClient.js";
+import {ChunkLoader} from "../storage/chunkLoader.js";
 
 
 export const loadRepositoryDescription = async (repository) => {
@@ -11,13 +12,19 @@ export const loadRepositoryDescription = async (repository) => {
 }
 
 export const loadPullRequests = async (repository) => {
-    const pulls = await getOctokit().rest.pulls.list({
-        ...repository.getOwnerAndRepoObj(),
-        state: "all",
-        per_page: 100,
-        page: 1,
-    });
-    console.log(pulls);
+    const loadFunction = async (page) => {
+        return await getOctokit().rest.pulls.list({
+            ...repository.getOwnerAndRepoObj(),
+            state: "all",
+            per_page: 100,
+            page
+        });
+    }
+    const chunk_loader = new ChunkLoader('pullRequests', loadFunction);
+
+    const allResults = await chunk_loader.loadUntilEnd();
+    repository.initializePullRequests(allResults);
+    return await repository.save();
 }
 
 export const loadPullRequestCommentsCount = async (repository) => {
