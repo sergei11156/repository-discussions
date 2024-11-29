@@ -1,10 +1,11 @@
 import inquirer from "inquirer";
 import {Repository} from "../models/repository.js";
 import {loadRepositoryDescription} from "../controllers/getRepositoryData.js";
+import chalk from "chalk";
+import ora from "ora";
 
-
-export const runAddRepository = () => {
-    inquirer
+export const runAddRepository = async () => {
+    const answers = await inquirer
         .prompt([
             {
                 type: "input",
@@ -12,10 +13,10 @@ export const runAddRepository = () => {
                 message: "Enter owner/repo:",
             },
         ])
-        .then((answers) => {
-            const repository = new Repository(answers.slug);
-
-            loadRepositoryDescription(repository);
-        });
+    const repository = new Repository(answers.slug);
+    const spinner = ora('Loading repository description').start()
+    const message = await loadRepositoryDescription(repository)
+    console.log(chalk.green(`Description: ${repository.description}`));
+    spinner.succeed(chalk.green(message));
 };
 
