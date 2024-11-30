@@ -18,5 +18,6 @@ export const runAddRepository = async () => {
     const message = await loadRepositoryDescription(repository)
     console.log(chalk.green(`Description: ${repository.description}`));
     spinner.succeed(chalk.green(message));
+    return true;
 };
 

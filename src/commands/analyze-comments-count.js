@@ -2,6 +2,7 @@
 import inquirer from "inquirer";
 import chalk from "chalk";
 import {Repository} from "../models/repository.js";
+import {compareWithAgeLimit} from "../shared/compareWithAgeLimit.js";
 
 export const runAnalyzeCommentsCount = async () => {
     let { repository } = await inquirer
@@ -15,21 +16,9 @@ export const runAnalyzeCommentsCount = async () => {
         ])
     repository = await Repository.loadBySlug(repository);
 
-    const { prAgeLimit } = await inquirer
-        .prompt([
-            {
-                type: "number",
-                name: "prAgeLimit",
-                message: "PR age limit in years?",
-                default: 100
-            }
-        ])
     let commitsCounts = {}
-    const dateLimit = new Date();
-    dateLimit.setFullYear(dateLimit.getFullYear() - prAgeLimit);
-
     for (const pr of repository.pullRequests) {
-        if ((new Date(pr.createdAt)) - dateLimit >= 0) {
+        if (compareWithAgeLimit(new Date(pr.createdAt))) {
             const totalCommentsAndReviews = pr.reviews.totalCount + pr.comments.totalCount
             if (commitsCounts.hasOwnProperty(totalCommentsAndReviews)) {
                 commitsCounts[totalCommentsAndReviews].push(pr);
@@ -77,4 +66,6 @@ export const runAnalyzeCommentsCount = async () => {
             console.log(chalk.green(`Comments count: ${chalk.yellow(commentsCount)}`))
         }
     }
+
+    return true;
 };

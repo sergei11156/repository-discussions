@@ -24,23 +24,22 @@ console.log(
 const options = {
     "Add Repository": runAddRepository,
     "Load Pull Requests": runLoadPullRequests,
-    "Analyze commits count": runAnalyzeCommentsCount
+    "Analyze commits count": runAnalyzeCommentsCount,
+    "Quit": () => false
 };
 
-inquirer
-    .prompt([
-        {
-            type: "list",
-            name: "selectedCommand",
-            message: "Choose a command to run:",
-            choices: Object.keys(options),
-        },
-    ])
-    .then((answers) => {
-        const exampleFunction = options[answers.selectedCommand];
-        if (exampleFunction) {
-            exampleFunction();
-        } else {
-            console.error("Invalid selection");
-        }
-    });
+async function mainMenu() {
+    const {selectedCommand} = await inquirer.prompt([
+            {
+                type: "list",
+                name: "selectedCommand",
+                message: "Choose a command to run:",
+                choices: Object.keys(options),
+            },
+        ]);
+    const command = options[selectedCommand];
+    if (await command()) {
+        await mainMenu();
+    }
+}
+mainMenu();

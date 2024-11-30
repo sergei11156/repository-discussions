@@ -26,4 +26,6 @@ export const runLoadPullRequests = async () => {
         });
         spinner.succeed();
     }
+
+    return true;
 };
