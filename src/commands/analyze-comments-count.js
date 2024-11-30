@@ -20,11 +20,12 @@ export const runAnalyzeCommentsCount = async () => {
     dateLimit.setFullYear(dateLimit.getFullYear() - prAgeLimit);
 
     for (const pr of repository.pullRequests) {
-        if (pr.dateCreated - dateLimit >= 0) {
-            if (commitsCounts.hasOwnProperty(pr.commentsCount)) {
-                commitsCounts[pr.commentsCount].push(pr);
+        if ((new Date(pr.createdAt)) - dateLimit >= 0) {
+            const totalCommentsAndReviews = pr.reviews.totalCount + pr.comments.totalCount
+            if (commitsCounts.hasOwnProperty(totalCommentsAndReviews)) {
+                commitsCounts[totalCommentsAndReviews].push(pr);
             } else {
-                commitsCounts[pr.commentsCount] = [pr];
+                commitsCounts[totalCommentsAndReviews] = [pr];
             }
         }
     }
@@ -58,16 +59,13 @@ export const runAnalyzeCommentsCount = async () => {
 
     const prsCommentsCountToShow = Object.keys(commitsCounts).filter((value) => value >= minCount);
     for (const commentsCount of prsCommentsCountToShow) {
-        const pullRequests = commitsCounts[commentsCount];
-        for (const pullRequest of pullRequests) {
+        for (const pr of commitsCounts[commentsCount]) {
             console.log(chalk.red((new Array(80).join('-'))))
-            console.log(chalk.red(`${pullRequest.title} ${chalk.yellow(`#${pullRequest.number}`)}`))
-            console.log(chalk.green(`${pullRequest.html_url}`))
-            console.log(chalk.green(`Created At: ${pullRequest.created_at}`))
-            console.log(chalk.green(`Updated At: ${pullRequest.updated_at}`))
-            console.log(chalk.green(`Closed At: ${chalk.yellow(pullRequest.closed_at)}`))
-            console.log(chalk.green(`Merged At: ${chalk.yellow(pullRequest.merged_at)}`))
-            console.log(chalk.green(`Comments count: ${chalk.yellow(pullRequest.commentsCount)}`))
+            console.log(chalk.red(`${pr.title} ${chalk.yellow(`#${pr.number}`)}`))
+            console.log(chalk.green(`${pr.url}`))
+            console.log(chalk.green(`State: ${chalk.yellow(pr.state)}`))
+            console.log(chalk.green(`Created At: ${chalk.yellow(pr.createdAt)}`))
+            console.log(chalk.green(`Comments count: ${chalk.yellow(commentsCount)}`))
         }
     }
 };

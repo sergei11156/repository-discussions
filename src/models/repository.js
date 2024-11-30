@@ -1,12 +1,23 @@
 import {listFiles, loadFromFile, saveToFile} from "../storage/json.js";
-import {Issue} from "./issue.js";
 
 
 export class Repository {
-    _owner;
-    _name;
-    _description;
     _pullRequests = [];
+    set pullRequests(value) {
+        this._pullRequests = value;
+    }
+
+    _owner;
+    get owner() {
+        return this._owner;
+    }
+
+    _name;
+    get name() {
+        return this._name;
+    }
+
+    _description;
     get description() {
         return this._description;
     }
@@ -28,10 +39,10 @@ export class Repository {
     async save () {
         const owner = this._owner;
         const name = this._name;
-        return await saveToFile(this.getFileName(), {
+        return await saveToFile(this.fileName, {
             owner, name,
             description: this._description,
-            pullRequests: this.serializePullRequest()
+            pullRequests: this._pullRequests
         })
     };
 
@@ -55,37 +66,14 @@ export class Repository {
     }
 
     async loadFromFile() {
-        const content = await loadFromFile(this.getFileName())
+        const content = await loadFromFile(this.fileName)
         this._owner = content.owner;
         this._name = content.name;
         this._description = content.description;
-        this.initializePullRequests(content.pullRequests);
+        this._pullRequests = content.pullRequests;
     }
 
-    initializePullRequests(pullRequests) {
-        this._pullRequests = [];
-        for (const pullRequest of pullRequests) {
-            this.addPullRequest(pullRequest);
-        }
-    }
-
-    addPullRequest(pullRequest) {
-        this._pullRequests.push(new Issue(pullRequest));
-    }
-
-    getPullRequestsCount() {
-        return this._pullRequests.length;
-    }
-
-    serializePullRequest() {
-        let requests = [];
-        for (const pullRequest of this._pullRequests) {
-            requests.push(pullRequest.getData());
-        }
-        return requests;
-    }
-
-    getFileName() {
+    get fileName() {
         return `${this._owner}_${this._name}`;
     }
 
