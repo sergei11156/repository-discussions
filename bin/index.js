@@ -7,6 +7,7 @@ import {runAddRepository} from "../src/commands/add-repository.js";
 import {runLoadPullRequests} from "../src/commands/load-pull-requests.js";
 import dotenv from "dotenv";
 import {initialize} from "../src/shared/githubClient.js";
+import {runLoadCommentsCount} from "../src/commands/load-comments-count.js";
 
 dotenv.config();
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -23,6 +24,7 @@ console.log(
 const options = {
     "Add Repository": runAddRepository,
     "Load Pull Requests": runLoadPullRequests,
+    "Load Pull Request's comments count": runLoadCommentsCount,
 };
 
 inquirer

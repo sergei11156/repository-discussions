@@ -1,11 +1,13 @@
-import ora from "ora";
+import {getOctokit} from "../shared/githubClient.js";
 
 export const loadPullRequestCommentsCount = async (repository) => {
-    const spinner = ora('Loading repository pull requests').start()
-    console.log(pulls.data.length);
-    for (const pull of pulls.data) {
-        const result = await octokit.rest.pulls.get({owner, repo, pull_number: pull.number})
-        console.log(result.data.comments);
-        break;
+
+    for (const issue of repository.pullRequests) {
+        const result = await getOctokit().rest.pulls.get({
+            ...repository.getOwnerAndRepoObj(),
+            pull_number: issue.number
+        });
+        issue.setCommentsCount(result.data.comments);
     }
+    return await repository.save()
 }

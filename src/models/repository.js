@@ -84,4 +84,8 @@ export class Repository {
     getFileName() {
         return `${this._owner}_${this._name}`;
     }
+
+    get pullRequests() {
+        return this._pullRequests;
+    }
 }
