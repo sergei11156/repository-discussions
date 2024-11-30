@@ -1,4 +1,23 @@
 export class Issue {
+    get data() {
+        return this._data;
+    }
+
+    get updated_at() {
+        return this._updated_at;
+    }
+
+    get closed_at() {
+        return this._closed_at;
+    }
+
+    get merged_at() {
+        return this._merged_at;
+    }
+
+    get html_url() {
+        return this._html_url;
+    }
     get number() {
         return this._number;
     }
@@ -23,6 +42,7 @@ export class Issue {
         if (data.hasOwnProperty("commentsCount")) {
             this._commentsCount = data.commentsCount;
         }
+        this._data = data;
     }
 
 
@@ -49,6 +69,10 @@ export class Issue {
 
     get created_at() {
         return this._created_at;
+    }
+
+    get dateCreated() {
+        return new Date(this._created_at);
     }
 
     get title() {
