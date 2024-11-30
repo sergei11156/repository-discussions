@@ -1,4 +1,4 @@
-import {saveToFile} from "./json.js";
+import {saveToFile} from "../storage/json.js";
 
 export class ChunkLoader {
 
@@ -18,11 +18,12 @@ export class ChunkLoader {
         this._started_at = Date.now();
     }
 
-    async loadUntilEnd() {
+    async loadUntilEnd(update) {
         this._started_at = Date.now();
         this._all_pages_data = [];
         let emptyReturned = false;
         do {
+            await update(this._nextPage, this._all_pages_data)
             const result = await this._loadFunction(this._nextPage);
             this._all_pages_data = [...this._all_pages_data, ...result.data];
             this._nextPage = this._nextPage + 1;
