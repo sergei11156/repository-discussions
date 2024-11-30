@@ -1,10 +1,19 @@
 'use strict'
-import {chooseRepository} from "../shared/chooseRepository.js";
 import inquirer from "inquirer";
 import chalk from "chalk";
+import {Repository} from "../models/repository.js";
 
 export const runAnalyzeCommentsCount = async () => {
-    const repository = await chooseRepository();
+    let { repository } = await inquirer
+        .prompt([
+            {
+                type: "list",
+                name: "repository",
+                message: "Choose repository:",
+                choices: await Repository.getAvailableRepoSlugs(),
+            }
+        ])
+    repository = await Repository.loadBySlug(repository);
 
     const { prAgeLimit } = await inquirer
         .prompt([

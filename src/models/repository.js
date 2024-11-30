@@ -53,16 +53,14 @@ export class Repository {
         }
     }
 
-    static async loadAll() {
+    static async getAvailableRepoSlugs() {
         const fileList = await listFiles();
-        const repoSlugs = fileList.map(name => name.replace(".json", "").replace("_", "/"));
-        const repositories = [];
-        for (const repoSlug of repoSlugs) {
-            const repo = new Repository(repoSlug)
-            await repo.loadFromFile()
-            repositories.push(repo);
-        }
-        return repositories;
+        return fileList.map(name => name.replace(".json", "").replace("_", "/"));
+    }
+    static async loadBySlug(slug) {
+        const repo = new Repository(slug)
+        await repo.loadFromFile()
+        return repo;
     }
 
     async loadFromFile() {
