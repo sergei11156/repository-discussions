@@ -8,8 +8,8 @@ export const runLoadPullRequests = async () => {
     const repository = await chooseRepository();
     const loadRepositoryPRs = 'Loading repository pull requests.';
     const spinner = ora(loadRepositoryPRs).start()
-    await loadPullRequests(repository, (page) => {
-        spinner.text = `${loadRepositoryPRs} Page: ${page}`
+    await loadPullRequests(repository, (pr) => {
+        spinner.text = `${loadRepositoryPRs} ${pr} loaded`
     });
     spinner.succeed();
 };

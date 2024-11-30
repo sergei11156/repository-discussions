@@ -1,23 +1,18 @@
 import {getOctokit} from "../shared/githubClient.js";
-import {ChunkLoader} from "../shared/chunkLoader.js";
 
 export const loadPullRequests = async (repository, update) => {
-    const loadFunction = async (page) => {
-        const list = await getOctokit().rest.pulls.list({
-            ...repository.getOwnerAndRepoObj(),
-            state: "all",
-            per_page: 100,
-            page
-        });
-        return list;
-    }
-    const chunk_loader = new ChunkLoader('pullRequests', loadFunction);
-
-    const allResults = await chunk_loader.loadUntilEnd(async (page, data) => {
-        update(page)
-        repository.initializePullRequests(data);
-        await repository.save()
+    const octokit = getOctokit();
+    const iterator = octokit.paginate.iterator(octokit.rest.pulls.list, {
+        ...repository.getOwnerAndRepoObj(),
+        state: "all",
+        per_page: 100
     });
-    repository.initializePullRequests(allResults);
-    return await repository.save();
+
+    for await (const { data: pullRequests } of iterator) {
+        for (const pullRequest of pullRequests) {
+            repository.addPullRequest(pullRequest);
+        }
+        update(repository.getPullRequestsCount())
+        await repository.save();
+    }
 }

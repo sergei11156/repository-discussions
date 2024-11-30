@@ -73,6 +73,10 @@ export class Repository {
         this._pullRequests.push(new Issue(pullRequest));
     }
 
+    getPullRequestsCount() {
+        return this._pullRequests.length;
+    }
+
     serializePullRequest() {
         let requests = [];
         for (const pullRequest of this._pullRequests) {
