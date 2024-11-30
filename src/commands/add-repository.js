@@ -16,8 +16,9 @@ export const runAddRepository = async () => {
     const repository = new Repository(answers.slug);
     const spinner = ora('Loading repository description').start()
     const message = await loadRepositoryDescription(repository)
-    console.log(chalk.green(`Description: ${repository.description}`));
     spinner.succeed(chalk.green(message));
+    console.log(chalk.green(`Description: ${repository.description}`));
+
     return true;
 };
 
