@@ -38,7 +38,7 @@ export class Repository {
     getOwnerAndRepoObj() {
         return {
             owner: this._owner,
-            repo: this._owner,
+            repo: this._name,
         }
     }
 
