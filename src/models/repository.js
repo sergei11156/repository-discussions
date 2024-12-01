@@ -7,6 +7,14 @@ export class Repository {
         this._pullRequests = value;
     }
 
+    _issues = []
+    get issues() {
+        return this._issues;
+    }
+    set issues(value) {
+        this._issues = value;
+    }
+
     _owner;
     get owner() {
         return this._owner;
@@ -42,7 +50,8 @@ export class Repository {
         return await saveToFile(this.fileName, {
             owner, name,
             description: this._description,
-            pullRequests: this._pullRequests
+            pullRequests: this._pullRequests,
+            issues: this._issues,
         })
     };
 
@@ -69,6 +78,7 @@ export class Repository {
         this._name = content.name;
         this._description = content.description;
         this._pullRequests = content.pullRequests;
+        this._issues = content.issues;
     }
 
     get fileName() {

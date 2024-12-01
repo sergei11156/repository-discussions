@@ -4,7 +4,7 @@ import chalk from "chalk";
 import {Repository} from "../models/repository.js";
 import {compareWithAgeLimit} from "../shared/compareWithAgeLimit.js";
 
-export const runAnalyzeCommentsCount = async () => {
+export const runAnalyzePullRequestCommentsCount = async () => {
     let { repository } = await inquirer
         .prompt([
             {
